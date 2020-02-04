@@ -18,6 +18,30 @@ $(document).ready(function () {
   printMonth(baseMonth);
   printHoliday(baseMonth);
 
+  // quando clicchiamo su next
+  $('#next').click(function () {
+    //dobbiamo andare avanti di un mese e chiamare la funzione che genera i guiorni e poi chiamare quella che crea le festivita
+    // $('h1').attr('data-this-month', 'devo mettere un valore')
+    // console.log($('h1').attr('data-this-month'));
+    var thisMonth = $('h1').attr('data-this-month');
+    var date = moment(thisMonth).add(1, 'months');
+    console.log(date);
+
+
+    printMonth(date);
+    printHoliday(date);
+  });
+
+  $('#prev').click(function () {
+    var thisMonth = $('h1').attr('data-this-month');
+    var date = moment(thisMonth).subtract(1, 'months');
+    console.log(date);
+
+
+    printMonth(date);
+    printHoliday(date);
+  });
+
 });
 
 
@@ -25,8 +49,16 @@ $(document).ready(function () {
 // FUNCTION -----------------------
 
 function printMonth(month) {
+  $('.days').html('');
+  //inseriamo h1 dinamicamente
+  $('h1').text(month.format('MMMM YYYY'));
+  $('h1').attr('data-this-month', month.format('YYYY-MM'));
+
+  //quanti giorni ha il mese corrente?
+  var daysInMonth = month.daysInMonth();
+
   // faccio un ciclo che parte da 1 fino a 31 incluso
-  for (var i = 1; i <= 31 ; i++) {
+  for (var i = 1; i <= daysInMonth ; i++) {
     // console.log(i);
     // "2018-01-06"
 
@@ -71,17 +103,22 @@ function printHoliday(month) {
           var thisHoliday = holidays[i];
           // console.log(thisHoliday);
           var thisHolidayData = thisHoliday.date;
-          console.log(thisHolidayData);
+          // console.log(thisHolidayData);
           //confrontare questa data con tutte le date negli li
           //ciclo sgli li usando jquery
-          $('.day').each(function () {
-            var elementDate = $(this).attr('data-date-complete');
-            // console.log(elementDate);
-            if(thisHolidayData == elementDate) {
-              $(this).addClass('red');
-              $(this).find('.nome-festivita').append(thisHoliday.name);
-            }
-          });
+          // $('.day').each(function () {
+          //   var elementDate = $(this).attr('data-date-complete');
+          //   // console.log(elementDate);
+          //   if(thisHolidayData == elementDate) {
+          //     $(this).addClass('red');
+          //     $(this).find('.nome-festivita').append(thisHoliday.name);
+          //   }
+          // });
+
+          //metodo con data attr
+          $('li[data-date-complete="'+ thisHolidayData  +'"]').addClass('red');
+          $('li[data-date-complete="'+ thisHolidayData  +'"]').find('.nome-festivita').append(thisHoliday.name);
+          // 'li[data-date-complete="2018-01-01"]'
         }
       },
       error: function () {
